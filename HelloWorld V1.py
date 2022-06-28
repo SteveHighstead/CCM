@@ -91,17 +91,17 @@ class TheAgent(python_actr.ACTR):
     def __init__(self):
         """ Intialize the production module """
         print("initialize")
-        self.vision_buffer.clear()
-        self.DMbuffer.clear()
-        self.agentFocus.set('start')
+        vision_buffer.clear()
+        DMbuffer.clear()
+        agentFocus.set('start')
         
-    def read_note(self, agentFocus='start'):
+    def read_note(agentFocus='start'):
         """ The Agent reads the note """  
         vision.request('isa:note message:?msg')
         print("Reading the note")
         agentFocus.set('memorize')
      
-    def memorize(self, agentFocus = 'memorize',
+    def memorize(agentFocus = 'memorize',
                  vision_buffer= 'isa:note message:?msg'):
         """ The Agent commits the message on the note to memory """
         print(f"Committing {msg} to memory")
@@ -109,7 +109,7 @@ class TheAgent(python_actr.ACTR):
         vision_buffer.clear()
         agentFocus.set('recall_message')
 
-    def retrieve_message(self, agentFocus='recall_message'):
+    def retrieve_message(agentFocus='recall_message'):
         """ Agent retrieves the message from memory """
         print("Recalling message")
         self.DM.request('isa:message content:?msg')
@@ -134,7 +134,7 @@ class TheAgent(python_actr.ACTR):
         print("Reading the computer screen")
         agentFocus.set('memorize_scr')
     
-    def memorize_screen(self, agentFocus = 'memorize_scr',
+    def memorize_screen(agentFocus = 'memorize_scr',
                  vision_buffer='isa:VDU screen:?msg'):
         """ The Agent commits message to memeory   """
         #print("The Screen reads, ", msg)
