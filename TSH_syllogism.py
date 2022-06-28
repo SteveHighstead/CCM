@@ -13,12 +13,12 @@ This model presents reasoning on the soundness of a syllogism, which is:
 """
 
 #Set path to CCMSuite3 (on my computer. Different for other users)
-import sys
-sys.path.append('C:\CCMSuite3')
+# import sys
+# sys.path.append('C:\CCMSuite3')
 
 #Import CCM Architecture
-import ccm                  # Import the ccm modelling modules
-from ccm.lib.actr import *  # Import the ACT-R modelling modules
+# import ccm                  # Import the ccm modelling modules
+# from ccm.lib.actr import *  # Import the ACT-R modelling modules
 
 
 class Model(ACTR):
