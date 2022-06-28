@@ -3,22 +3,17 @@
 """
 @Author: Steve Highstead
 @Title: Hello World_v1.py
-@ 30 May 2020
-@ Version: V1
+@ 28 June 2022
+@ Version: V2
 """
 
-#Set path to CCMSuite
-import sys
-sys.path.append('E:\Desktop\CCMSuite3-master')
-
-# Import CCM ACT-R library
-import ccm
-from ccm.lib.actr import*
-
+# import  actr from ccm.lib.actr import*
+import python_actr
+from python_actr.actr import *
 
 ###################### The Environment ############################
 
-class Desk_Environment(ccm.Model):
+class Desk_Environment(python_actr.Model):
     
     """
     This model reads a message from a piece of paper
@@ -34,14 +29,14 @@ class Desk_Environment(ccm.Model):
     note == a piece of paper with something written on it.
     """
 
-    kbd = ccm.Model(isa='KBD', location='desk', message=None)
-    vdu = ccm.Model(isa='VDU', location='desk', screen=None, salience=0.9)
-    note= ccm.Model(isa='note', location='desk', message='Hello World', salience =0.9)
+    kbd = python_actr.Model(isa='KBD', location='desk', message=None)
+    vdu = python_actr.Model(isa='VDU', location='desk', screen=None, salience=0.9)
+    note= python_actr.Model(isa='note', location='desk', message='Hello World', salience =0.9)
                               #note: salience= 0.5 the lowest for SOSVision to pick up 
 
 ######################### Motor Module ######################
 
-class MotorModule(ccm.Model):
+class MotorModule(python_actr.Model):
     
     """
     The motor module modifes an envieonment 'chunk'
@@ -63,7 +58,7 @@ class MotorModule(ccm.Model):
 
 ################ Agent Production Module ########################
 
-class TheAgent(ACTR):
+class TheAgent(python_actr.ACTR):
     """
     This is a cognitive agent, TheAgent, also known as the production module.
     The agent reads a message from a piece of paper (the note) and commits it to
@@ -93,30 +88,31 @@ class TheAgent(ACTR):
                        delay_sd=None)
 
 
-    def init():
+    def __init__(self):
         """ Intialize the production module """
-        vision_buffer.clear()
-        DMbuffer.clear()
-        agentFocus.set('start')
+        print("initialize")
+        self.vision_buffer.clear()
+        self.DMbuffer.clear()
+        self.agentFocus.set('start')
         
-    def read_note(agentFocus='start'):
+    def read_note(self, agentFocus='start'):
         """ The Agent reads the note """  
         vision.request('isa:note message:?msg')
         print("Reading the note")
         agentFocus.set('memorize')
      
-    def memorize(agentFocus = 'memorize',
+    def memorize(self, agentFocus = 'memorize',
                  vision_buffer= 'isa:note message:?msg'):
         """ The Agent commits the message on the note to memory """
         print(f"Committing {msg} to memory")
-        DM.add('isa:message content:?msg')
+        self.DM.add('isa:message content:?msg')
         vision_buffer.clear()
         agentFocus.set('recall_message')
 
-    def retrieve_message(agentFocus='recall_message'):
+    def retrieve_message(self, agentFocus='recall_message'):
         """ Agent retrieves the message from memory """
         print("Recalling message")
-        DM.request('isa:message content:?msg')
+        self.DM.request('isa:message content:?msg')
         agentFocus.set('Print_msg')
 
     def remember(agentFocus='Print_msg',
@@ -130,8 +126,7 @@ class TheAgent(ACTR):
         """ The Agent enters message into the keyboard  """
         print(f"Entering {msg} into the keyboard")
         motor.do_KBD(msg)
-        agentFocus.set('display')
-     
+        agentFocus.set('display')  
    
     def read_screen(agentFocus='display'):
         """ The Agent reads computer screenn  """
@@ -139,19 +134,19 @@ class TheAgent(ACTR):
         print("Reading the computer screen")
         agentFocus.set('memorize_scr')
     
-    def memorize_screen(agentFocus = 'memorize_scr',
+    def memorize_screen(self, agentFocus = 'memorize_scr',
                  vision_buffer='isa:VDU screen:?msg'):
         """ The Agent commits message to memeory   """
         #print("The Screen reads, ", msg)
         print(f"Committing {msg} to memory")
-        DM.add('isa:scr_message content:?msg')
+        self.DM.add('isa:scr_message content:?msg')
         vision_buffer.clear()
         agentFocus.set('recall_Scr_message')
  
-    def retrieve_Scr_message(agentFocus='recall_Scr_message'):
+    def retrieve_Scr_message(self, agentFocus='recall_Scr_message'):
         """ The Agent recalls the message from memory  """
         print("Recalling screen message")
-        DM.request('isa:scr_message content:?msg')
+        self.DM.request('isa:scr_message content:?msg')
         agentFocus.set('Scr_msg')
 
     def remember_scr(agentFocus='Scr_msg',
@@ -160,7 +155,7 @@ class TheAgent(ACTR):
         print( msg )
         agentFocus.set('stop')
       
-    def end_run(agentFocus= 'stop'):
+    def end_run(self, agentFocus= 'stop'):
         """ This ends the Agent production """
         self.stop()
         
@@ -173,16 +168,16 @@ It also logs the execution of the model for dipslay
 """
     
 deskTop = Desk_Environment()      # name the environment
-    
+
 sophy = TheAgent()                # name the agent
 
 deskTop.agent = sophy             # put the agent into the environment
 
-ccm.log_everything(deskTop)       # print out what happens in the environment
+python_actr.log_everything(deskTop)       # print out what happens in the environment
 
 deskTop.run()                     # run the environment
 
-ccm.finished()                    # stop the environment
+#python_actr.finished()                    # stop the environment
 
 ##################### Finished  #########################################
 
